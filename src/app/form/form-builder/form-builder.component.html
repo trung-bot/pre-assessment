@@ -1,0 +1,70 @@
+<div fxFill>
+    <div style="margin-bottom: 16px;">
+        <!--Questions-->
+        <form [formGroup]="formGroup">
+            <div formArrayName="arr"
+                *ngFor="let item of formArray.controls; let i = index; trackBy: trackByFn">
+
+                <ng-container [formGroupName]="i" style="margin-bottom: 10px;">
+                    <div fxLayout="column">
+                        <h2>
+                            {{item.get('question').value +
+                            (item.get('isRequired').value ? ' *':'') }}
+                        </h2>
+                        <div
+                            *ngIf="item.get('type').value === 'paragraph'; else typeCheckboxList">
+                            <textarea formControlName="answer"
+                                placeholder="Your Answer ...."></textarea>
+                            <div
+                                *ngIf="item?.get('answer')?.hasError('required')"
+                                class="error-msg">
+                                You must replay this question
+                            </div>
+                        </div>
+                        <ng-template #typeCheckboxList>
+                            <div formArrayName="listAnswers"
+                                *ngFor="let answer of item.get('listAnswers')?.value; let j = index; trackBy: trackByFn">
+                                <div [formGroupName]="j">
+                                    <div fxLayout="row" style="margin: 6px 0">
+                                        <input #isSelected
+                                            class="form-check-input"
+                                            formControlName="isSelected"
+                                            type="checkbox"
+                                            [id]="'cb' + '-' + i + '-'+ j"
+                                            [name]="'cb' + '-'+ i + '-' + j">
+                                        <label class="form-check-label"
+                                            [for]="'cb'+'-'+i+'-'+j">
+                                            {{answer?.content}}
+                                        </label>
+                                        <div *ngIf="isSelected.value &&
+                                                item.get('allowCustomAnswer').value && 
+                                                answer.content === 'Other'">
+                                            &nbsp;
+                                            <input
+                                                formControlName="customAnswer"
+                                                type="text">
+
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+                            <div
+                                *ngIf="item?.get('listAnswers')?.hasError('required')"
+                                class="error-msg">
+                                You must replay this question
+                            </div>
+                        </ng-template>
+
+                    </div>
+                </ng-container>
+            </div>
+
+        </form>
+
+    </div>
+
+    <button mat-button (click)="onOpenDialogAddNewQuestion()">Add A New
+        Question</button>
+    <button mat-button (click)="reviewMyAnswer()">Review My Answer</button>
+</div>

@@ -1,0 +1,67 @@
+<div fxFill fxLayout="column">
+    <mat-toolbar fxLayout="row" fxLayoutAlign="space-between center">
+        <button mat-icon-button (click)="onClose()">
+            <mat-icon>close</mat-icon>
+        </button>
+        <div>{{'Add a New Questions'}}</div>
+        <div></div>
+
+    </mat-toolbar>
+    <div fxFlex style="padding: 24px">
+        <form [formGroup]="questionForm" fxLayout="column" fxLayoutGap="16px" (ngSubmit)="onSubmit()">
+            <!-- Title of Question -->
+            <mat-form-field fxFlex>
+                <input autofocus matInput type="text" placeholder="Question" formControlName="question">
+                <mat-error>
+                    <span *ngIf="questionForm?.get('question')?.hasError('required')">
+                        You must input this value
+                    </span>
+                </mat-error>
+            </mat-form-field>
+            <mat-checkbox color="primary" formControlName="isRequired">{{'This question is required'}}
+            </mat-checkbox>
+            <!-- Type of Question (Paragraph / Checkbox List) -->
+            <mat-radio-group class="question-type-radio-group" aria-label="Select an option"
+                formControlName="type" fxLayout="column" fxLayoutGap="10px">
+                <mat-radio-button class="question-type-radio-button" value="paragraph">Paragraph</mat-radio-button>
+                <mat-radio-button class="question-type-radio-button" value="selection">Checkbox
+                    List</mat-radio-button>
+            </mat-radio-group>
+
+            <ng-container *ngIf="questionForm.get('type')?.value === 'selection'">
+                <!--Form Array Answers-->
+                <div formArrayName="listAnswers">
+                    <ng-container *ngFor="let answer of answers?.controls; let i = index">
+                        <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="32px" [formGroupName]="i">
+                            <mat-form-field fxFlex appearance="fill">
+                                <input matInput formControlName="content" placeholder="Answer Option*">
+
+                                <mat-error>
+                                    <span *ngIf="answers.controls[i]?.get('content')?.hasError('required')">
+                                        You must input this value
+                                    </span>
+                                </mat-error>
+                            </mat-form-field>
+                            <button
+                                (click)='removeAnswer(i)' mat-icon-button>
+                                <mat-icon>remove</mat-icon>
+                            </button>
+                        </div>
+                    </ng-container>
+
+                    <button type="button"
+                        mat-button (click)="addAnswer()">Add A New Question</button>
+                </div>
+
+                <mat-checkbox color="primary" formControlName="allowCustomAnswer">{{'Allow user to specify their ownanswer'}}
+                </mat-checkbox>
+            </ng-container>
+
+
+           
+
+            <button mat-button type="submit" class="button-submit">Submit</button>
+        </form>
+
+    </div>
+</div>

@@ -1,0 +1,14 @@
+<div fxFill fxLayout="column">
+    <div *ngFor="let item of questions" style="margin-bottom: 12px">
+        <h4 style="font-weight: 600;">{{item.question}}</h4>
+
+        <div *ngIf="item.type === 'paragraph' else listAnswer">
+            {{item.answer}}
+        </div>
+        <ng-template #listAnswer>
+            {{item.listAnswers | ListAnswers}}
+        </ng-template>
+    </div>
+
+    <a routerLink="../builder" routerLinkActive="active" >Back to Form Builder</a>
+ </div>
